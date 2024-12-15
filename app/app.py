@@ -9,7 +9,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # すべてのオリジンからのリクエストを許可
     allow_credentials=True,
-    allow_methods=["*"],  # すべてのHTTPメソッドを許可
+    allow_methods=["GET"],  # GETメソッドを許可
     allow_headers=["*"],  # すべてのヘッダーを許可
 )
 

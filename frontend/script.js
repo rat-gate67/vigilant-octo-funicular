@@ -44,9 +44,9 @@ const geometry = new THREE.BoxGeometry(2, 2, 2);
 const materials = [
     materialWithTextBlockHeight,
     materialWithTextBlockHash,
-    materialWithTextBlockData,
     new THREE.MeshBasicMaterial({ color: 0xffff00 }),
     new THREE.MeshBasicMaterial({ color: 0xff00ff }),
+    materialWithTextBlockData,
     new THREE.MeshBasicMaterial({ color: 0x00ffff }),
 ];
 const cube = new THREE.Mesh(geometry, materials);
@@ -64,39 +64,45 @@ async function fetchBlockData() {
 
 async function updateText() {
     const data = await fetchBlockData();
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+
+    // Block Height
+    let canvas = document.createElement('canvas');
+    let context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 256;
     context.font = "30px Arial";
     context.fillStyle = "white";
-    
-    context.fillStyle = "white";
     context.fillText(`Block Height ${data.block_height}`, 10, 50);
+    let textureBlockHeight = new THREE.CanvasTexture(canvas);
+    let materialWithTextBlockHeight = new THREE.MeshBasicMaterial({ map: textureBlockHeight });
 
-    const textureBlockHeight = new THREE.CanvasTexture(canvas);
-    const materialWithTextBlockHeight = new THREE.MeshBasicMaterial({ map: textureBlockHeight });
-
+    // Block Hash
+    canvas = document.createElement('canvas');
+    context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 256;
     context.fillStyle = "blue";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "white";
     context.fillText(`Block Hash ${data.block_hash}`, 10, 50);
+    let textureBlockHash = new THREE.CanvasTexture(canvas);
+    let materialWithTextBlockHash = new THREE.MeshBasicMaterial({ map: textureBlockHash });
 
-    const textureBlockHash = new THREE.CanvasTexture(canvas);
-    const materialWithTextBlockHash = new THREE.MeshBasicMaterial({ map: textureBlockHash });
-
+    // Block Data
+    canvas = document.createElement('canvas');
+    context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 256;
     context.fillStyle = "green";
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "white";
-    context.fillText(`Block Data : difficulty ${data.block_data.difficulty}`, 10, 50);
+    context.fillText(`Difficulty ${data.block_data.difficulty}`, 10, 50);
+    let textureBlockData = new THREE.CanvasTexture(canvas);
+    let materialWithTextBlockData = new THREE.MeshBasicMaterial({ map: textureBlockData });
 
-    const textureBlockData = new THREE.CanvasTexture(canvas);
-    const materialWithTextBlockData = new THREE.MeshBasicMaterial({ map: textureBlockData });
-
-    const texture = new THREE.CanvasTexture(canvas);
-    let materialWithText = new THREE.MeshBasicMaterial({ map: texture });
-    
     materials[0] = materialWithTextBlockHeight;
     materials[1] = materialWithTextBlockHash;
-    materials[2] = materialWithTextBlockData;
+    materials[4] = materialWithTextBlockData;
 }
 
 async function init() {
@@ -110,7 +116,7 @@ function animate() {
 
     // キューブを回転させる
     
-    cube.rotation.x += 0.01;
+    // cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
 
     renderer.render(scene, camera);
